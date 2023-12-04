@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  python-block:
+    build: ./python-block
+    depends_on:
+      - postgres
+volumes:
+  postgres:

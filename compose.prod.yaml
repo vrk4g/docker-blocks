@@ -1,0 +1,27 @@
+# docker compose -f compose.yaml -f compose.prod.yaml up -d
+version: '3.8'
+services:
+  python-block:
+    build:
+      args:
+        - REQ_POSTFIX=prod
+    command: gunicorn python-block.wsgi:application --bind 0.0.0.0:8000
+    env_file:
+      - ./python-block/prod.env
+    expose:
+      - 8000
+    volumes:
+      - python-block-static:/app/static
+      - python-block-media:/app/media
+  nginx:
+    build: ./nginx
+    depends_on:
+      - python-block
+    ports:
+      - 80:80
+    volumes:
+      - python-block-static:/python-block/static
+      - python-block-media:/python-block/media
+volumes:
+  python-block-static:
+  python-block-media:
